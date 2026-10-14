@@ -1,9 +1,13 @@
+DROP DATABASE IF EXISTS shop;
+CREATE DATABASE shop;
+USE shop;
+
 CREATE TABLE FORMATION(
    id_formation INT,
    name_formation VARCHAR(30) NOT NULL,
    description VARCHAR(30),
    duration INT NOT NULL,
-   type LOGICAL,
+   type BOOLEAN NOT NULL, 
    price DECIMAL(15,2),
    PRIMARY KEY(id_formation)
 );
