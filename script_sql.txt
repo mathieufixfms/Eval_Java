@@ -1,0 +1,45 @@
+CREATE TABLE FORMATION(
+   id_formation INT,
+   name_formation VARCHAR(30) NOT NULL,
+   description VARCHAR(30),
+   duration INT NOT NULL,
+   type LOGICAL,
+   price DECIMAL(15,2),
+   PRIMARY KEY(id_formation)
+);
+
+CREATE TABLE COMMAND(
+   id_command VARCHAR(50),
+   date_command DATE NOT NULL,
+   PRIMARY KEY(id_command)
+);
+
+CREATE TABLE USER_CONNECTED(
+   id_user_connected INT,
+   login_user_connected VARCHAR(50) NOT NULL,
+   passeword_user_connected VARCHAR(50) NOT NULL,
+   PRIMARY KEY(id_user_connected)
+);
+
+CREATE TABLE CLIENT(
+   id_client INT,
+   name_client VARCHAR(30) NOT NULL,
+   surname_client VARCHAR(30) NOT NULL,
+   email_client VARCHAR(50),
+   adress_client VARCHAR(50) NOT NULL,
+   phone_client VARCHAR(50),
+   id_user_connected INT NOT NULL,
+   PRIMARY KEY(id_client),
+   FOREIGN KEY(id_user_connected) REFERENCES USER_CONNECTED(id_user_connected)
+);
+
+CREATE TABLE ORDER_(
+   id_formation INT,
+   id_command VARCHAR(50),
+   id_user_connected INT,
+   quantity INT,
+   PRIMARY KEY(id_formation, id_command, id_user_connected),
+   FOREIGN KEY(id_formation) REFERENCES FORMATION(id_formation),
+   FOREIGN KEY(id_command) REFERENCES COMMAND(id_command),
+   FOREIGN KEY(id_user_connected) REFERENCES USER_CONNECTED(id_user_connected)
+);
