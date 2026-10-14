@@ -2,6 +2,7 @@ package fr.business;
 
 import fr.dao.ClientDao;
 import fr.entities.Client;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -11,15 +12,9 @@ public class ShopServiceImpl implements ShopService {
     private final ClientDao clientDAO;
     private Connection connection;
 
-    public ShopServiceImpl(ClientDao clientDAO, Connection connection) {
-        this.clientDAO = clientDAO;
-        this.connection = connection;
-    }
 
     private Connection initConnection() {
-        // Initialize and return the database connection
-        // This is a placeholder; actual implementation will depend on your database setup
-        try{
+        try {
             Class.forName("org.mariadb.jdbc.Driver");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -28,13 +23,14 @@ public class ShopServiceImpl implements ShopService {
         String login = "root";
         String password = "";
 
-        try {
-            return connection = DriverManager.getConnection(url, login, password);
-        } catch (SQLException e) {
-            throw new IllegalStateException("Unable to connect to the shop database", e);
-        }
+        	try {
+    			return connection = DriverManager.getConnection(url,login,password);
+    		} catch (SQLException e) {
+    			e.printStackTrace();
+    			return null;
+    		}
     }
-
+    
     public ShopServiceImpl(ClientDao clientDAO) {
         this.clientDAO = clientDAO;
         this.connection = this.initConnection();
@@ -42,22 +38,26 @@ public class ShopServiceImpl implements ShopService {
 
     @Override
     public void addClient(Client client) {
+        if (client == null) {
+            throw new IllegalArgumentException("Client cannot be null");
+        }
         clientDAO.saveClient(client, connection);
-    }   
+    }
 
     @Override
     public void updateClient(Client client) {
+        if (client == null) {
+            throw new IllegalArgumentException("Client cannot be null");
+        }
         clientDAO.updateClient(client, connection);
     }
 
     @Override
     public void deleteClient(Client client) {
+        if (client == null) {
+            throw new IllegalArgumentException("Client cannot be null");
+        }
         clientDAO.deleteClient(client, connection);
-    }
-
-    @Override
-    public List<Client> listClients() {
-        return clientDAO.findAll(connection);
     }
 
     @Override
@@ -85,8 +85,11 @@ public class ShopServiceImpl implements ShopService {
 
     @Override
     public Client getClientById(long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getClientById'");
+        return clientDAO.findById(id, connection);
     }
 
+    @Override 
+    public List<Client> listClients(){
+        return clientDAO.findAll(connection);
+    }
 }

@@ -6,15 +6,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
 import fr.entities.Client;
+import fr.entities.UserConnected;
 
 public class ClientDaoImpl implements ClientDao {
-    
-    @Override 
+
+    @Override
     public Client findById(long id, Connection connection) {
-        
         String sql = "SELECT id_client, name_client, surname_client, email_client, "
-            + "adress_client, phone_client FROM CLIENT WHERE id_client = ?";
+            + "adress_client, phone_client, id_user_connected FROM CLIENT WHERE id_client = ?";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setLong(1, id);
@@ -32,14 +33,20 @@ public class ClientDaoImpl implements ClientDao {
 
     @Override
     public void deleteClient(Client client, Connection connection) {
-        // TODO Auto-generated method stub
-        
+        String sql = "DELETE FROM CLIENT WHERE id_client = ?";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setLong(1, client.getId());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new IllegalStateException("Unable to delete client " + client.getId(), e);
+        }
     }
 
     @Override
     public List<Client> findAll(Connection connection) {
         String sql = "SELECT id_client, name_client, surname_client, email_client, "
-            + "adress_client, phone_client FROM CLIENT ORDER BY id_client";
+            + "adress_client, phone_client, id_user_connected FROM CLIENT ORDER BY id_client";
         List<Client> clients = new ArrayList<>();
 
         try (PreparedStatement ps = connection.prepareStatement(sql);
@@ -55,24 +62,51 @@ public class ClientDaoImpl implements ClientDao {
 
     @Override
     public void saveClient(Client client, Connection connection) {
-        // TODO Auto-generated method stub
-        
+        String sql = "INSERT INTO CLIENT (id_client, name_client, surname_client, email_client, adress_client, phone_client, id_user_connected) "
+            + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setLong(1, client.getId());
+            ps.setString(2, client.getName());
+            ps.setString(3, client.getSurname());
+            ps.setString(4, client.getEmail());
+            ps.setString(5, client.getAddress());
+            ps.setString(6, client.getPhoneNumber());
+            ps.setLong(7, userConnectedId(client));
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new IllegalStateException("Unable to save client " + client.getId(), e);
+        }
     }
 
-    @Override
-    public void updateClient(Client client, Connection connection) {
-        // TODO Auto-generated method stub
-        
+    private long userConnectedId(Client client) {
+        UserConnected userConnected = client.getUserConnected();
+        return userConnected.getId();
     }
 
     private Client mapClient(ResultSet rs) throws SQLException {
+        UserConnected userConnected = null;
+        long userId = rs.getLong("id_user_connected");
+        if (!rs.wasNull()) {
+            userConnected = new UserConnected();
+            userConnected.setId(userId);
+        }
+
         return new Client(
             rs.getLong("id_client"),
             rs.getString("name_client"),
             rs.getString("surname_client"),
             rs.getString("email_client"),
             rs.getString("adress_client"),
-            rs.getString("phone_client")
+            rs.getString("phone_client"),
+            userConnected
         );
     }
+
+    @Override
+    public void updateClient(Client client, Connection connection) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'updateClient'");
+    }
+
 }

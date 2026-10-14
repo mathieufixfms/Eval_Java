@@ -1,7 +1,7 @@
 package fr.entities;
 
 public class UserConnected {
-    private final long id;
+    private long id;
     private String login;
     private String passeword;
 
@@ -9,6 +9,11 @@ public class UserConnected {
         this.id = id;
         this.login = login;
         this.passeword = passeword;
+    }
+
+    public UserConnected() {
+        this.id = 0;
+        //TODO Auto-generated constructor stub
     }
 
     public long getId() { return id; }
@@ -21,5 +26,9 @@ public class UserConnected {
     @Override
     public String toString() {
         return id + " - " + login + " : " + passeword;
+    }
+
+    public void setId(long userId) {
+        this.id = userId;
     }
  }  
