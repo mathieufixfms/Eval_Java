@@ -14,8 +14,11 @@ public class ClientDaoImpl implements ClientDao {
 
     @Override
     public Client findById(long id, Connection connection) {
-        String sql = "SELECT id_client, name_client, surname_client, email_client, "
-            + "adress_client, phone_client, id_user_connected FROM CLIENT WHERE id_client = ?";
+        String sql = "SELECT c.id_client, c.name_client, c.surname_client, c.email_client, "
+            + "c.adress_client, c.phone_client, u.id_user_connected, "
+            + "u.login_user_connected, u.passeword_user_connected FROM CLIENT c "
+            + "LEFT JOIN USER_CONNECTED u ON u.id_user_connected = c.id_user_connected "
+            + "WHERE c.id_client = ?";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setLong(1, id);
@@ -45,8 +48,11 @@ public class ClientDaoImpl implements ClientDao {
 
     @Override
     public List<Client> findAll(Connection connection) {
-        String sql = "SELECT id_client, name_client, surname_client, email_client, "
-            + "adress_client, phone_client, id_user_connected FROM CLIENT ORDER BY id_client";
+        String sql = "SELECT c.id_client, c.name_client, c.surname_client, c.email_client, "
+            + "c.adress_client, c.phone_client, u.id_user_connected, "
+            + "u.login_user_connected, u.passeword_user_connected FROM CLIENT c "
+            + "LEFT JOIN USER_CONNECTED u ON u.id_user_connected = c.id_user_connected "
+            + "ORDER BY c.id_client";
         List<Client> clients = new ArrayList<>();
 
         try (PreparedStatement ps = connection.prepareStatement(sql);
@@ -88,8 +94,11 @@ public class ClientDaoImpl implements ClientDao {
         UserConnected userConnected = null;
         long userId = rs.getLong("id_user_connected");
         if (!rs.wasNull()) {
-            userConnected = new UserConnected();
-            userConnected.setId(userId);
+            userConnected = new UserConnected(
+                userId,
+                rs.getString("login_user_connected"),
+                rs.getString("passeword_user_connected")
+            );
         }
 
         return new Client(

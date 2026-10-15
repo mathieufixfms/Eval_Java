@@ -40,6 +40,6 @@ public class Client {
     @Override
     public String toString() {
         return id + " - " + name + " " + surname + " : " + email + ", " + address + ", " + phoneNumber + ", "
-                + (userConnected != null ? userConnected.toString() : "ahahah");
+                + userConnected.getId() + " - " + userConnected.getLogin() + " : " + userConnected.getPasseword();
     }
 }

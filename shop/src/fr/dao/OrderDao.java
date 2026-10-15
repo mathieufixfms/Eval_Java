@@ -8,6 +8,7 @@ import fr.entities.Order;
 public interface OrderDao {
     Order findById(long formationId, String commandId, long userConnectedId, Connection connection);
     List<Order> findAll(Connection connection);
+    List<Order> findByUserConnectedId(long userConnectedId, Connection connection);
     void saveOrder(Order order, Connection connection);
     void updateOrder(Order order, Connection connection);
     void deleteOrder(Order order, Connection connection);

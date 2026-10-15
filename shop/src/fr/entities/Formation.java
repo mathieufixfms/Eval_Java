@@ -34,4 +34,8 @@ public class Formation {
     public String toString() {
         return id + " - " + name + " : " + description + " (" + duration + " hours, " + price + " EUR)";
     }
+
+    
+
+ 
 }

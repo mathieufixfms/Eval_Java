@@ -31,4 +31,9 @@ public class UserConnected {
     public void setId(long userId) {
         this.id = userId;
     }
+
+    public char[] getUserConnected() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getUserConnected'");
+    }
  }  

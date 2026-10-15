@@ -41,7 +41,7 @@ public class FormationDaoImpl implements FormationDao {
                 formations.add(mapFormation(rs));
             }
         } catch (SQLException e) {
-            throw new IllegalStateException("Unable to list formations", e);
+            throw new IllegalStateException("Unable to find all formations", e);
         }
         return formations;
     }
@@ -104,5 +104,11 @@ public class FormationDaoImpl implements FormationDao {
             rs.getBoolean("type"),
             rs.getDouble("price")
         );
+    }
+
+    @Override
+    public List<Formation> findByType(boolean type, Connection connection) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'findByType'");
     }
 }

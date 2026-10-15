@@ -57,6 +57,26 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
+    public List<Order> findByUserConnectedId(long userConnectedId, Connection connection) {
+        String sql = SELECT_ORDER + "WHERE o.id_user_connected = ? "
+            + "ORDER BY c.date_command DESC, o.id_command, o.id_formation";
+        List<Order> orders = new ArrayList<>();
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setLong(1, userConnectedId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    orders.add(mapOrder(rs));
+                }
+            }
+        } catch (SQLException e) {
+            throw new IllegalStateException(
+                "Unable to list orders for user " + userConnectedId, e);
+        }
+        return orders;
+    }
+
+    @Override
     public void saveOrder(Order order, Connection connection) {
         String sql = "INSERT INTO ORDER_ (id_formation, id_command, id_user_connected, quantity) "
             + "VALUES (?, ?, ?, ?)";
